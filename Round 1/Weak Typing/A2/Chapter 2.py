@@ -25,7 +25,7 @@ else:
 
 # from __future__ import annotations
 
-import typing as t
+from collections import Counter, deque
 
 
 BOTH_HAND = 'F'
@@ -35,51 +35,59 @@ RIGHT_HAND = 'O'
 MOD = 1000000007
 
 
-def next_hand(prev_c, curr_c, left, right) -> t.Tuple[int, int]:
-    if prev_c == RIGHT_HAND:
-        if curr_c != RIGHT_HAND:
-            left = right+1
-    elif prev_c == LEFT_HAND:
-        if curr_c != LEFT_HAND:
-            right = left+1
-    else:
-        if curr_c == RIGHT_HAND:
-            right = min(left+1, right)
-        elif curr_c == LEFT_HAND:
-            left = min(left, right+1)
-    return left, right
-
-
 def solve():
     N = int(stdin.readline())
     S = stdin.readline().strip()
-    answer = 0
-    count = 0
-    total = N*(N+1)//2
-    for s in range(N):
-        prev = s
-        left = 0
-        right = 0
-        for e in range(s, N):
-            count += 1
-            print(f'{count}/{total}', end='\r')
-            left, right = next_hand(S[prev], S[e], left, right)
-            if S[e] == RIGHT_HAND:
-                answer += right
-            elif S[e] == LEFT_HAND:
-                answer += left
-            else:
-                answer += min(right, left)
-            answer %= MOD
-            prev = e
-    return answer
-345
-350
+
+    comp_s = deque()
+    comp_c = deque()
+
+    for c in S:
+        if comp_s and (c == comp_s[-1] or c == 'F'):
+            comp_c[-1] += 1
+        else:
+            comp_s.append(c)
+            comp_c.append(1)
+
+    if len(comp_s) > 1 and comp_s[0] == 'F':
+        comp_s.popleft()
+        c = comp_c.popleft()
+        comp_c[0] += c
+
+    for pivot in range(N):
+        pass
+
+    counter = Counter()
+    hand = S[0]
+
+    for pivot in range(N):
+        if pivot == 0:
+            continue
+
+        is_switched = False
+
+        if S[pivot] == BOTH_HAND:
+            pass
+        else:
+            if S[pivot] != hand:
+                is_switched = True
+                if S[pivot] == RIGHT_HAND:
+                    counter['R'] = counter['L']+1
+                elif S[pivot] == LEFT_HAND:
+                    counter['L'] = counter['R']+1
+            hand = S[pivot]
+
+        if is_switched:
+            counter['G'] += max(pivot-1, 0)
+
+        counter['ANSWER'] += counter['G']
+        counter['ANSWER'] %= MOD
+    return counter['ANSWER']
+
 
 def main():
     T = int(stdin.readline())
     for i in range(1, T+1):
-        print(f'Case #{i}/{T}                            ')
         stdout.write(f'Case #{i}: {solve()}\n')
 
 

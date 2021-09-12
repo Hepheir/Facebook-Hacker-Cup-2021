@@ -1,5 +1,5 @@
-Case #1: 0
-Case #2: 1
-Case #3: 0
-Case #4: 36
-Case #5: 146
+Case #1: (deque(['O']), deque([1]))
+Case #2: (deque(['X', 'O']), deque([2, 1]))
+Case #3: (deque(['O']), deque([5]))
+Case #4: (deque(['X', 'O', 'X']), deque([6, 2, 2]))
+Case #5: (deque(['X', 'O', 'X', 'O', 'X', 'O', 'X']), deque([2, 2, 2, 2, 2, 2, 1]))
